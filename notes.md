@@ -46,3 +46,7 @@ Wind up     : 04:30 PM
 #### Panic
 - A state of the application where the application execution cannot proceed further
 
+## Concurrency
+### Wait Group
+- Semaphore based counter
+- Has the ability to block the execution of the current function until the counter becomes 0
