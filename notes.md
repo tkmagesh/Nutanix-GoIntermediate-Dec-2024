@@ -51,3 +51,38 @@ Wind up     : 04:30 PM
 ### Wait Group
 - Semaphore based counter
 - Has the ability to block the execution of the current function until the counter becomes 0
+### Channel (data type)
+- facilitates "share memory by communicating" strategy
+#### Declaration
+```go
+var <var_name> chan <data_type>
+// ex:
+var ch chan int
+```
+#### Initialization
+```go
+<var_name> = make(chan <data_type>)
+// ex:
+ch = make(chan int)
+```
+#### Declaration & Initializatio
+```go
+var ch chan int = make(chan int)
+// OR
+var ch = make(chan int)
+// OR
+ch := make(chan int)
+```
+### Channel Operator ( <- )
+#### Send Operation
+```go
+<var_name> <- <data>
+// ex:
+ch <- 100
+```
+#### Receive Operation
+```go
+<- <var_name>
+// ex:
+data := <- ch
+```
