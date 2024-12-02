@@ -1,25 +1,36 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // Modify the below program in such a way that the logic for checking a prime number is executed concurrently
 
 func main() {
-	var start, end int = 100, 200
+	var start, end int = 100, 2000
 	primes := generatePrimes(start, end)
-	for _, primeNo := range primes {
+	for primeNo := range primes {
 		fmt.Printf("Prime No : %d\n", primeNo)
 	}
-
 }
 
-func generatePrimes(start, end int) []int {
-	var primes []int
+func generatePrimes(start, end int) <-chan int {
+	primes := make(chan int)
+	wg := sync.WaitGroup{}
 	for no := start; no <= end; no++ {
-		if isPrime(no) {
-			primes = append(primes, no)
-		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if isPrime(no) {
+				primes <- no
+			}
+		}()
 	}
+	go func() {
+		wg.Wait()
+		close(primes)
+	}()
 	return primes
 }
 
