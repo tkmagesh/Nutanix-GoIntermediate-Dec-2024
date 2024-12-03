@@ -5,6 +5,7 @@ import (
 	"go-rest-api/internal/database"
 	transportHTTP "go-rest-api/internal/transport/http"
 
+	"github.com/fatih/color"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ import (
 func Run() error {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.Info("Setting Up Our APP")
-
+	color.Red("Starting server")
 	var err error
 	store, err := database.NewDatabase()
 	if err != nil {

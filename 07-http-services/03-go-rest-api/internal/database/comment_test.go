@@ -1,3 +1,4 @@
+//go:build integration
 // +build integration
 
 package database
@@ -6,7 +7,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/TutorialEdge/go-rest-api-course/internal/comment"
+	"go-rest-api/internal/comment"
+
 	"github.com/stretchr/testify/assert"
 )
 
