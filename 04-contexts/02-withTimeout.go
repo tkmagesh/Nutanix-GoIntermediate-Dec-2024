@@ -27,7 +27,12 @@ LOOP:
 	for no := 0; ; no++ {
 		select {
 		case <-ctx.Done():
-			fmt.Println("[printNos] cancellation signal received")
+			if ctx.Err() == context.Canceled {
+				fmt.Println("[printNos] cancellation signal received - (programmatic)")
+			}
+			if ctx.Err() == context.DeadlineExceeded {
+				fmt.Println("[printNos] cancellation signal received - (timeout)")
+			}
 			break LOOP
 		default:
 			time.Sleep(500 * time.Millisecond)
