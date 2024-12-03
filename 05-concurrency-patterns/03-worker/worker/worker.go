@@ -36,6 +36,7 @@ func New(workerCount int) *Worker {
 			for work := range worker.workQueue {
 				work.Task()
 			}
+			fmt.Printf("Worker %d shutting down!\n", id)
 		}(i)
 	}
 	return worker
