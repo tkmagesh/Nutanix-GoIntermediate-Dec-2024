@@ -86,3 +86,13 @@ ch <- 100
 // ex:
 data := <- ch
 ```
+
+## Context
+### Create a root context (non-cancellable)
+    - context.Background()
+### Create children (cancellable)
+    - context.WithCancel(parentCtx)
+    - context.WithTimeout(parentCtx, time.Duration)
+    - context.WithDeadline(parentCtx, time.Time)
+### Create children (non-cancellable)
+    - context.WithValue(parentCtx, key, value)
