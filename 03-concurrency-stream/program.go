@@ -10,25 +10,26 @@ import (
 )
 
 func main() {
-	wg := &sync.WaitGroup{}
-	dataCh := make(chan int)
-	wg.Add(1)
-	go Source("data1.dat", dataCh, wg)
-
-	wg.Add(1)
-	go Source("data2.dat", dataCh, wg)
-
+	dataCh := readData([]string{"data1.dat", "data2.dat"})
 	evenCh, oddCh := Splitter(dataCh)
-
 	evenSumCh := Sum(evenCh)
 	oddSumCh := Sum(oddCh)
-
 	done := Merger(evenSumCh, oddSumCh)
-
-	wg.Wait()
-	close(dataCh)
-
 	<-done
+}
+
+func readData(fileNames []string) <-chan int {
+	dataCh := make(chan int)
+	go func() {
+		wg := &sync.WaitGroup{}
+		for _, fileName := range fileNames {
+			wg.Add(1)
+			go Source(fileName, dataCh, wg)
+		}
+		wg.Wait()
+		close(dataCh)
+	}()
+	return dataCh
 }
 
 func Source(fileName string, dataCh chan<- int, wg *sync.WaitGroup) {
@@ -47,7 +48,7 @@ func Source(fileName string, dataCh chan<- int, wg *sync.WaitGroup) {
 	}
 }
 
-func Splitter(dataCh chan int) (<-chan int, <-chan int) {
+func Splitter(dataCh <-chan int) (<-chan int, <-chan int) {
 	evenCh := make(chan int)
 	oddCh := make(chan int)
 	go func() {
@@ -67,6 +68,7 @@ func Splitter(dataCh chan int) (<-chan int, <-chan int) {
 func Sum(ch <-chan int) <-chan int {
 	sumCh := make(chan int)
 	go func() {
+		defer close(sumCh)
 		var total int
 		for val := range ch {
 			total += val
@@ -92,7 +94,8 @@ func Merger(evenSumCh, oddSumCh <-chan int) <-chan struct{} {
 				fmt.Fprintf(file, "Odd Total : %d\n", oddSum)
 			}
 		}
-		close(doneCh)
+		// close(doneCh)
+		doneCh <- struct{}{}
 	}()
 	return doneCh
 }
